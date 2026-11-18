@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổng Kho Bếp Từ Ánh Nhung - Hotline: 0376.857.099</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
+        
+        body { background-color: #f0f2f5; color: #333; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        .top-banner { background: #002b5e; color: #ffcc00; text-align: center; padding: 6px 15px; font-size: 12px; font-weight: bold; letter-spacing: 0.4px; flex-shrink: 0; }
+
+        /* HEADER GỌN GÀNG THEO MẪU */
+        header { background: #004aad; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 100; }
+        
+        .search-container-pill { flex: 1; display: flex; align-items: center; background: white; border-radius: 30px; overflow: hidden; padding: 4px 6px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .btn-menu-pill { background: transparent; border: none; padding: 6px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 14px; font-weight: bold; border-right: 1px solid #eee; gap: 1px; min-width: 50px; }
+        .btn-menu-pill span { font-size: 9px; text-transform: uppercase; font-weight: 800; color: #004aad; }
+
+        .search-input-pill { flex: 1; border: none; padding: 8px 12px; outline: none; font-size: 14px; color: #333; background: transparent; }
+
+        .btn-cart-pill { background: transparent; border: none; padding: 6px 12px; cursor: pointer; color: #444; font-size: 18px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .cart-count-badge { position: absolute; top: 2px; right: 4px; background: #d70018; color: white; font-size: 10px; font-weight: bold; padding: 1px 5px; border-radius: 50%; }
+
+        .main-wrapper { max-width: 1240px; width: 100%; margin: 0 auto; padding: 12px 12px 0 12px; display: flex; flex-direction: column; gap: 10px; flex: 1; overflow: hidden; }
+
+        .sticky-filter-bar { flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; background: #f0f2f5; padding-bottom: 5px; z-index: 50; }
+
+        .category-dropdown-wrapper { position: relative; width: 100%; }
+        @media (min-width: 768px) { .category-dropdown-wrapper { width: 280px; } }
+
+        .sidebar-title { background: #004aad; color: white; padding: 10px 15px; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); user-select: none; }
+        .sidebar-title:hover { background: #003380; }
+
+        .category-list { 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            width: 100%; 
+            background: white; 
+            list-style: none; 
+            border-radius: 8px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            display: none; 
+            overflow: hidden;
+            border: 1px solid #ddd;
+            margin-top: 5px;
+            z-index: 300;
+        }
+        
+        .category-list.show { display: block; }
+        .category-list li { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; color: #333; }
+        .category-list li:hover, .category-list li.active { background: #004aad; color: white; font-weight: 600; }
+
+        .toolbar { background: white; padding: 10px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 13px; }
+        .sort-group { display: flex; align-items: center; gap: 6px; }
+        .sort-btn { padding: 5px 10px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .sort-btn:hover, .sort-btn.active { background: #004aad; color: white; border-color: #004aad; font-weight: bold; }
+
+        .scrollable-product-area { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+        
+        /* Cấu hình lưới sản phẩm: 2 cột trên điện thoại */
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        @media (min-width: 768px) {
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
+        }
+
+        .product-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; border: 1px solid transparent; cursor: pointer; }
+        .product-card:hover { transform: translateY(-3px); border-color: #004aad; box-shadow: 0 6px 15px rgba(0,74,173,0.15); }
+        .product-img { width: 100%; height: 130px; object-fit: contain; background: #fafafa; padding: 8px; }
+        @media (min-width: 768px) { .product-img { height: 180px; } }
+
+        .product-body { padding: 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        @media (min-width: 768px) { .product-body { padding: 14px; } }
+
+        .product-brand { font-size: 10px; font-weight: bold; color: #d70018; text-transform: uppercase; margin-bottom: 2px; }
+        .product-name { font-size: 12px; font-weight: bold; color: #004aad; margin-bottom: 4px; line-height: 1.3; }
+        @media (min-width: 768px) { .product-name { font-size: 15px; margin-bottom: 6px; } }
+
+        .price-market { font-size: 11px; color: #777; text-decoration: line-through; }
+        @media (min-width: 768px) { .price-market { font-size: 13px; } }
+
+        .product-price { color: #d70018; font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+        @media (min-width: 768px) { .product-price { font-size: 17px; margin-bottom: 12px; } }
+        
+        .card-actions { display: flex; gap: 6px; }
+        .btn-detail { flex: 1; background: #e8f1ff; color: #004aad; border: 1px solid #004aad; padding: 6px 2px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; text-align: center; }
+        .btn-buy { flex: 1; background: linear-gradient(90deg, #ff6600, #ff8800); color: white; border: none; padding: 6px 2px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; text-align: center; }
+        @media (min-width: 768px) {
+            .btn-detail, .btn-buy { padding: 8px; font-size: 13px; }
+        }
+        .btn-detail:hover { background: #d0e3ff; }
+        .btn-buy:hover { opacity: 0.9; }
+
+        .floating-hotline { position: fixed; bottom: 20px; right: 20px; background: #d70018; color: white; padding: 10px 16px; border-radius: 50px; font-weight: bold; font-size: 14px; text-decoration: none; box-shadow: 0 4px 15px rgba(215, 0, 24, 0.4); display: flex; align-items: center; gap: 8px; z-index: 900; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); justify-content: center; align-items: center; z-index: 999; padding: 15px; overflow-y: auto; }
+        .modal-box, .detail-box { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 650px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; animation: fadeInScale 0.25s ease-in-out; position: relative; }
+        .detail-box { max-width: 760px; }
+
+        .alert-box { max-width: 380px; text-align: center; padding: 30px 20px; }
+        .alert-box i { font-size: 45px; color: #28a745; margin-bottom: 15px; }
+        .alert-box p { font-size: 16px; color: #333; margin-bottom: 20px; font-weight: 500; }
+        .alert-box button { background: #004aad; color: white; border: none; padding: 10px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .alert-box button:hover { background: #003380; }
+
+        @keyframes fadeInScale {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #666; font-weight: bold; }
+        .close-x:hover { color: #d70018; }
+        
+        .detail-header { display: grid; grid-template-columns: 240px 1fr; gap: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px; }
+        .detail-header img { width: 100%; height: 180px; object-fit: contain; border: 1px solid #eee; border-radius: 8px; padding: 5px; background: #fafafa; }
+        .detail-title { font-size: 22px; font-weight: 800; color: #004aad; margin-bottom: 8px; }
+        
+        .specs-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        .specs-table tr { border-bottom: 1px solid #e0e0e0; }
+        .specs-table th { background: #f8f9fa; color: #004aad; text-align: left; padding: 12px; width: 32%; vertical-align: top; font-weight: 700; text-transform: uppercase; font-size: 13px; border-right: 1px solid #e0e0e0; }
+        .specs-table td { padding: 12px; color: #333; line-height: 1.6; }
+        .specs-table ul { padding-left: 18px; margin: 0; }
+        .specs-table li { margin-bottom: 6px; }
+        
+        .text-red { color: #d70018; font-weight: bold; }
+        .detail-footer { margin-top: 20px; display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: bold; color: #004aad; }
+        .cart-item-price { color: #d70018; font-size: 13px; }
+        .qty-controls { display: flex; align-items: center; gap: 6px; margin: 0 10px; }
+        .qty-btn { background: #e8f1ff; border: 1px solid #004aad; color: #004aad; width: 24px; height: 24px; font-weight: bold; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .qty-btn:hover { background: #004aad; color: white; }
+        .btn-remove-item { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        .btn-remove-item:hover { background: #cc0000; }
+
+        .cart-total-bar { font-size: 16px; font-weight: bold; text-align: right; margin: 15px 0; color: #d70018; border-top: 2px solid #eee; padding-top: 10px; }
+        
+        .form-group { margin-bottom: 12px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-actions button { flex: 1; padding: 11px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-confirm { background: #28a745; color: white; }
+        .btn-close { background: #6c757d; color: white; }
+
+        @media (max-width: 768px) {
+            .detail-header { grid-template-columns: 1fr; }
+            .specs-table th, .specs-table td { display: block; width: 100%; }
+            .specs-table th { border-right: none; border-bottom: 1px solid #ddd; padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-banner">
+        🔥 TỔNG KHO BẾP TỪ ÁNH NHUNG - XÃ TAM ANH, TP. ĐÀ NẴNG | HOTLINE: 0376.857.099 🔥
+    </div>
+
+    <!-- HEADER GỌN GÀNG THEO MẪU -->
+    <header>
+        <div class="search-container-pill">
+            <button class="btn-menu-pill" onclick="toggleCategoryDropdown(event)">
+                <i class="fa-solid fa-bars" style="font-size: 16px; color: #004aad;"></i>
+                <span>Menu</span>
+            </button>
+            <input type="text" id="searchInput" class="search-input-pill" placeholder="Tìm theo tên hoặc model (VD: BE388SA, PT-028...)" onkeyup="applyFilters()">
+            <button class="btn-cart-pill" onclick="openCartModal()">
+                <i class="fa-solid fa-cart-shopping" style="color: #004aad;"></i>
+                <span class="cart-count-badge" id="cartCount">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <div class="sticky-filter-bar">
+            <div class="category-dropdown-wrapper">
+                <ul class="category-list" id="categoryList">
+                    <li class="active" id="cat-all" onclick="selectCategory('all', this)">Tất cả sản phẩm <i class="fa-solid fa-chevron-right"></i></li>
+                    <li id="cat-bep-tu" onclick="selectCategory('bep-tu', this)">Bếp Từ <i class="fa-solid fa-chevron-right"></i></li>
+                    <li id="cat-hut-mui" onclick="selectCategory('hut-mui', this)">Hút Mùi <i class="fa-solid fa-chevron-right"></i></li>
+                    <li id="cat-loc-nuoc" onclick="selectCategory('loc-nuoc', this)">Lọc Nước & Máy Lọc <i class="fa-solid fa-chevron-right"></i></li>
+                    <li id="cat-chau-voi" onclick="selectCategory('chau-voi', this)">Chậu & Vòi Nước <i class="fa-solid fa-chevron-right"></i></li>
+                    <li id="cat-phu-kien" onclick="selectCategory('phu-kien', this)">Bộ Nồi & Phụ Kiện <i class="fa-solid fa-chevron-right"></i></li>
+                    <li id="cat-khac" onclick="selectCategory('khac', this)">Thiết Bị Khác <i class="fa-solid fa-chevron-right"></i></li>
+                </ul>
+            </div>
+
+            <div class="toolbar">
+                <div style="font-weight: bold; color: #004aad;" id="currentCatTitle">TẤT CẢ SẢN PHẨM</div>
+                <div class="sort-group">
+                    <span style="font-size: 12px;">Sắp xếp:</span>
+                    <button class="sort-btn active" onclick="setSort('default', this)">Mặc định</button>
+                    <button class="sort-btn" onclick="setSort('asc', this)"><i class="fa-solid fa-arrow-up-short-wide"></i> Thấp-Cao</button>
+                    <button class="sort-btn" onclick="setSort('desc', this)"><i class="fa-solid fa-arrow-down-wide-short"></i> Cao-Thấp</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scrollable-product-area">
+            <div class="product-grid" id="productGrid"></div>
+            
+            <!-- VỊ TRÍ GOOGLE MAPS THU NHỎ GỌN GÀNG -->
+            <div class="map-container" style="max-width: 500px; margin: 25px auto 10px auto; padding: 0 10px;">
+              <h3 style="text-align: center; color: #004aad; margin-bottom: 10px; font-size: 16px;">VỊ TRÍ CỬA HÀNG TRÊN BẢN ĐỒ</h3>
+              <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d404.14943159769024!2d108.57918344322351!3d15.487711025793546!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1794905343080!5m2!1svi!2s" 
+                  width="100%" 
+                  height="220" 
+                  style="border:0;" 
+                  allowfullscreen="" 
+                  loading="lazy" 
+                  referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="tel:0376857099" class="floating-hotline">
+        <i class="fa-solid fa-phone"></i> Hotline: 0376.857.099
+    </a>
+
+    <!-- Modal Chi Tiết Sản Phẩm -->
+    <div class="modal" id="detailModal">
+        <div class="detail-box">
+            <span class="close-x" onclick="closeDetailModal()">&times;</span>
+            <div class="detail-header">
+                <img id="dtImg" src="" alt="" onerror="this.src='https://via.placeholder.com/300x180?text=San+Pham'">
+                <div>
+                    <div class="product-brand" id="dtBrand">Bauer</div>
+                    <div class="detail-title" id="dtName">Model: BE388SA</div>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 6px;" id="dtCategoryName">Loại sản phẩm: Bếp Từ</p>
+                    <div class="price-market" id="dtMarketPrice">Giá nhập kho: 4.800.000 đ</div>
+                    <div class="product-price" style="font-size: 22px; margin-top: 4px;" id="dtStorePrice">Giá bán: 9.000.000 đ</div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                        <button class="btn-buy" style="padding: 12px 18px; font-size: 14px; width: auto;" onclick="addToCartFromDetail()">
+                            <i class="fa-solid fa-cart-plus"></i> THÊM VÀO GIỎ HÀNG
+                        </button>
+                        <a href="tel:0376857099" style="background: #d70018; color: white; padding: 12px 18px; border-radius: 5px; font-weight: bold; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-phone"></i> GỌI: 0376.857.099
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <table class="specs-table">
+                <tr>
+                    <th>Vùng nấu & Công suất</th>
+                    <td>
+                        <ul>
+                            <li>Bếp 2 lò từ</li>
+                            <li>Trái: 2300W - booster 3000W</li>
+                            <li>Phải: 2300W - booster 3000W</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Tính năng</th>
+                    <td>
+                        <ul>
+                            <li>Mặt kính <span class="text-red">Euro diamond, vát 4 cạnh, viền hợp kim 360°</span></li>
+                            <li>Công nghệ <span class="text-red">EURO</span></li>
+                            <li>Hoạt động <span class="text-red">liên tục không ngắt</span> ở mức công suất thấp</li>
+                            <li>02 bếp có chức năng <span class="text-red">Booster</span> siêu nhanh</li>
+                            <li>Điều khiển cảm ứng dạng trượt</li>
+                            <li>Công nghệ <span class="text-red">Inverter</span> tiết kiệm 38% điện năng</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>An toàn</th>
+                    <td>
+                        <ul>
+                            <li>Chức năng khóa trẻ em</li>
+                            <li>Cảnh báo nhiệt dư</li>
+                            <li>"<span class="text-red">Chế độ cảm ứng chống tràn</span>"</li>
+                            <li>Tự động ngắt khi quá nhiệt hoặc không có nồi</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Tiêu chuẩn kỹ thuật</th>
+                    <td>
+                        <ul>
+                            <li>Kích thước mặt bếp: 730x430mm</li>
+                            <li>Kích thước khoét đá: 680x380mm</li>
+                            <li>Tổng công suất: 4000W</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="detail-footer">
+                <span style="font-size: 13px; color: #004aad; font-weight: bold;">📍 Tổng Kho Bếp Từ Ánh Nhung (Xã Tam Anh - TP. Đà Nẵng) | 📞 0376.857.099</span>
+                <button class="btn-close" style="padding: 10px 20px; border:none; border-radius:5px; cursor:pointer;" onclick="closeDetailModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Giỏ Hàng / Điền Thông Tin (Đã làm sạch hoàn toàn) -->
+    <div class="modal" id="cartModal">
+        <div class="modal-box">
+            <span class="close-x" onclick="closeCartModal()">&times;</span>
+            <h3>Giỏ Hàng / Đơn Hàng Của Bạn</h3>
+            <div id="cartItemsList" style="max-height: 220px; overflow-y: auto; margin-bottom: 10px;"></div>
+            <div class="cart-total-bar" id="cartTotalBar">Tổng tiền: 0 đ</div>
+            
+            <form id="orderForm" onsubmit="submitToGoogleSheet(event)">
+                <h4 style="color: #004aad; margin: 15px 0 8px; font-size: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Thông tin nhận hàng</h4>
+                <div class="form-group">
+                    <input type="text" id="cusName" name="name" placeholder="Họ và tên khách hàng *" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="cusPhone" name="phone" placeholder="Số điện thoại liên hệ *" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="cusAddress" name="address" rows="2" placeholder="Địa chỉ giao hàng chi tiết *" required></textarea>
+                </div>
+                <div class="modal-actions" style="margin-top: 15px;">
+                    <button type="button" class="btn-close" onclick="closeCartModal()">Đóng / Mua tiếp</button>
+                    <button type="submit" class="btn-confirm" id="submitBtn">Xác Nhận Đặt Hàng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="customAlertModal">
+        <div class="modal-box alert-box">
+            <i class="fa-solid fa-circle-check"></i>
+            <p id="customAlertText"></p>
+            <button onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzWgCMBCmXHLWxJ882pljLaP2MxLohKEZQ72DdPMU_k2UOTVZSb0QZb_V1i7wrLPHTX/exec';
+
+        const products = [
+            { id: 1, name: "LÕI 1", brand: "AQUA", category: "loc-nuoc", marketPrice: 10000, price: 33334, img: "images/loi1.jpg", desc: "Lõi lọc nước chính hãng Aqua số 1." },
+            { id: 2, name: "LÕI 2", brand: "AQUA", category: "loc-nuoc", marketPrice: 13000, price: 33334, img: "images/loi2.jpg", desc: "Lõi lọc nước chính hãng Aqua số 2." },
+            { id: 3, name: "LÕI 3", brand: "AQUA", category: "loc-nuoc", marketPrice: 10000, price: 33334, img: "images/loi3.jpg", desc: "Lõi lọc nước chính hãng Aqua số 3." },
+            { id: 4, name: "MÁY LỌC NÓNG NGUỘI", brand: "AQUA", category: "loc-nuoc", marketPrice: 2950000, price: 5500000, img: "images/maylocnuoc.jpg", desc: "Máy lọc nước nóng nguội Aqua cao cấp." },
+            { id: 5, name: "BE388SA", brand: "BAUER", category: "bep-tu", marketPrice: 4800000, price: 9000000, img: "images/be388.jpg", desc: "Bếp từ cao cấp Bauer BE388SA chính hãng Malaysia." },
+            { id: 6, name: "BE638GTA", brand: "BAUER", category: "bep-tu", marketPrice: 4450000, price: 8400000, img: "https://hsn.vn/images/stories/virtuemart/product/bep-tu-2-vung-nau-bauer-be638gta.jpg", desc: "Bếp từ Bauer BE638GTA công nghệ Inverter tiết kiệm điện." },
+            { id: 7, name: "BE626JPG", brand: "BAUER", category: "bep-tu", marketPrice: 5000000, price: 9000000, img: "images/be626.jpg", desc: "Bếp từ Bauer BE626JPG mặt kính chống xước cao cấp." },
+            { id: 8, name: "BE32SS", brand: "BAUER", category: "bep-tu", marketPrice: 3900000, price: 7000000, img: "images/be32ss.jpg", desc: "Bếp từ Bauer BE32SS thiết kế sang trọng, bền bỉ." },
+            { id: 9, name: "BE3008SI", brand: "BAUER", category: "bep-tu", marketPrice: 3300000, price: 7000000, img: "images/be3008.jpg", desc: "Bếp từ Bauer BE3008SI hiệu năng ổn định." },
+            { id: 10, name: "BE668GTA PLUS", brand: "BAUER", category: "bep-tu", marketPrice: 6500000, price: 10500000, img: "images/be668.jpg", desc: "Bếp từ Bauer BE668GTA PLUS cao cấp nhiều tính năng." },
+            { id: 11, name: "BC7035DC GRAND", brand: "BAUER", category: "hut-mui", marketPrice: 3400000, price: 5100000, img: "images/hutmui1.jpg", desc: "Hút mùi kính cong Bauer BC7035DC GRAND lực hút mạnh mẽ." },
+            { id: 12, name: "BC6002B/7002B", brand: "BAUER", category: "hut-mui", marketPrice: 1900000, price: 2900000, img: "images/hutmui2.jpg", desc: "Hút mùi âm tủ Bauer tiện lợi, tiết kiệm không gian." },
+            { id: 13, name: "BC70/90MTV", brand: "BAUER", category: "hut-mui", marketPrice: 3050000, price: 5000000, img: "images/hutmui3.jpg", desc: "Hút mùi Bauer BC70/90MTV thiết kế hiện đại." },
+            { id: 14, name: "BCG70MSC", brand: "BAUER", category: "hut-mui", marketPrice: 2650000, price: 4300000, img: "images/hutmui4.jpg", desc: "Hút mùi kính vát Bauer BCG70MSC." },
+            { id: 15, name: "BỘ NỒI WAVE (1 BỘ / 4 CÁI)", brand: "BAUER", category: "phu-kien", marketPrice: 980000, price: 1500000, img: "images/bonoiwave.jpg", desc: "Bộ nồi inox Bauer Wave 4 món cao cấp dùng cho bếp từ." },
+            { id: 16, name: "BỘ NỒI PLUS (1 BỘ / 5 CÁI)", brand: "BAUER", category: "phu-kien", marketPrice: 1350000, price: 1850000, img: "images/bonoiplus.jpg", desc: "Bộ nồi inox Bauer Plus 5 món." },
+            { id: 17, name: "NỒI LUỘC GÀ (1 CÁI)", brand: "BAUER", category: "phu-kien", marketPrice: 600000, price: 800000, img: "images/noiluocga.jpg", desc: "Nồi luộc gà chuyên dụng kích thước lớn." },
+            { id: 18, name: "GT04-8050", brand: "GENTO", category: "chau-voi", marketPrice: 2450000, price: 3300000, img: "images/chau1.jpg", desc: "Chậu rửa bát Gento GT04-8050 inox đúc cao cấp." },
+            { id: 19, name: "GT04 - 7843 NEW (Inox Chống Xước)", brand: "GENTO", category: "chau-voi", marketPrice: 2600000, price: 3600000, img: "images/chau2.jpg", desc: "Chậu rửa bát Gento chống xước công nghệ mới." },
+            { id: 20, name: "GT04 - 8048", brand: "GENTO", category: "chau-voi", marketPrice: 2350000, price: 3350000, img: "images/chau3.jpg", desc: "Chậu rửa bát Gento GT04-8048." },
+            { id: 21, name: "RL - 804", brand: "GENTO", category: "chau-voi", marketPrice: 450000, price: 750000, img: "images/voi1.jpg", desc: "Vòi nước rửa chén Gento RL-804 sáng bóng." },
+            { id: 22, name: "RL - 908", brand: "GENTO", category: "chau-voi", marketPrice: 600000, price: 800000, img: "images/voi2.jpg", desc: "Vòi nước rửa chén Gento RL-908." },
+            { id: 23, name: "GT - 206 NEW", brand: "GENTO", category: "chau-voi", marketPrice: 1450000, price: 1700000, img: "images/voi3.jpg", desc: "Vòi rửa bát cao cấp Gento GT-206 New." },
+            { id: 24, name: "PT-1126PLUS", brand: "PRATO", category: "bep-tu", marketPrice: 1100000, price: 1850000, img: "images/pt1126plus.jpg", desc: "Bếp từ Prato PT-1126PLUS chính hãng." },
+            { id: 25, name: "PT-1126T-1", brand: "PRATO", category: "bep-tu", marketPrice: 850000, price: 1400000, img: "images/pt1126t1.jpg", desc: "Bếp từ đơn Prato PT-1126T-1." },
+            { id: 26, name: "PT-028", brand: "PRATO", category: "bep-tu", marketPrice: 3050000, price: 8300000, img: "images/pt028.jpg", desc: "Bếp từ đôi Prato PT-028 cao cấp công nghệ Inverter Dualcore." },
+            { id: 27, name: "PT-662", brand: "PRATO", category: "bep-tu", marketPrice: 3600000, price: 9150000, img: "images/pt662.jpg", desc: "Bếp từ Prato PT-662 mặt kính Euro Platinum vát cạnh." },
+            { id: 28, name: "PT-9CL.3V", brand: "PRATO", category: "loc-nuoc", marketPrice: 2600000, price: 4600000, img: "images/locprato1.jpg", desc: "Hệ thống lọc nước Prato PT-9CL.3V." },
+            { id: 29, name: "PT-9NG", brand: "PRATO", category: "loc-nuoc", marketPrice: 1900000, price: 3300000, img: "images/locprato2.jpg", desc: "Máy lọc nước Prato PT-9NG." },
+            { id: 30, name: "PT-9NK.2V", brand: "PRATO", category: "loc-nuoc", marketPrice: 2300000, price: 4500000, img: "images/locprato3.jpg", desc: "Lọc nước Prato PT-9NK.2V chính hãng." },
+            { id: 31, name: "82.46 1 HỐ 304, VÒI", brand: "ZEVILLA", category: "chau-voi", marketPrice: 1650000, price: 3050000, img: "images/zevilla1.jpg", desc: "Chậu rửa bát 1 hố inox 304 kèm vòi Zevilla." },
+            { id: 32, name: "82.46 1 HỐ 304", brand: "ZEVILLA", category: "chau-voi", marketPrice: 1660000, price: 2950000, img: "images/zevilla2.jpg", desc: "Chậu rửa bát 1 hố inox 304 Zevilla." },
+            { id: 33, name: "82.46 1 HỐ 304, VÒI (Mã phụ)", brand: "ZEVILLA", category: "chau-voi", marketPrice: 1660000, price: 2980000, img: "images/zevilla3.jpg", desc: "Bộ chậu vòi Zevilla cao cấp." },
+            { id: 34, name: "BE32SS (Mã mới)", brand: "BAUER", category: "bep-tu", marketPrice: 3000000, price: 6500000, img: "images/be32ss.jpg", desc: "Bếp từ Bauer BE32SS lô mới giá tốt." },
+            { id: 35, name: "BIC35DS Ultra", brand: "BAUER", category: "hut-mui", marketPrice: 2600000, price: 4800000, img: "images/hutmui5.jpg", desc: "Hút mùi Bauer BIC35DS Ultra siêu êm." },
+            { id: 36, name: "BE668GTA PLUS (Lô mới)", brand: "BAUER", category: "bep-tu", marketPrice: 5200000, price: 9800000, img: "images/be668.jpg", desc: "Bếp từ Bauer BE668GTA PLUS." },
+            { id: 37, name: "BC70ESI", brand: "BAUER", category: "hut-mui", marketPrice: 2680000, price: 4600000, img: "images/hutmui6.jpg", desc: "Hút mùi Bauer BC70ESI." },
+            { id: 38, name: "BỘ NỒI WAVE 4 CÁI (Lô mới)", brand: "BAUER", category: "phu-kien", marketPrice: 980000, price: 1500000, img: "images/bonoiwave.jpg", desc: "Bộ nồi Wave 4 cái." },
+            { id: 39, name: "SBW6SEU15F", brand: "BAUER", category: "khac", marketPrice: 12200000, price: 16500000, img: "images/mayruachen.jpg", desc: "Máy rửa chén độc lập Bauer SBW6SEU15F dung tích lớn." },
+            { id: 40, name: "PT-802.G2", brand: "PRATO", category: "khac", marketPrice: 1850000, price: 3200000, img: "images/bepgas1.jpg", desc: "Bếp gas âm Prato PT-802.G2 tiết kiệm gas." },
+            { id: 41, name: "PT-828.G3", brand: "PRATO", category: "khac", marketPrice: 1850000, price: 3200000, img: "images/bepgas2.jpg", desc: "Bếp gas âm Prato PT-828.G3 3 lò nấu." },
+            { id: 42, name: "PT-9NL.2V", brand: "PRATO", category: "loc-nuoc", marketPrice: 4350000, price: 7500000, img: "images/locprato4.jpg", desc: "Hệ thống lọc nước Prato PT-9NL.2V cao cấp." },
+            { id: 43, name: "PT-9NN.2V PRO", brand: "PRATO", category: "loc-nuoc", marketPrice: 3000000, price: 5500000, img: "images/locprato5.jpg", desc: "Máy lọc nước Prato PT-9NN.2V PRO lọc sạch tinh khiết." }
+        ];
+
+        let cart = [];
+        let currentCategory = 'all';
+        let currentSort = 'default';
+        let viewingProduct = null;
+
+        function showCustomAlert(message) {
+            document.getElementById('customAlertText').innerText = message;
+            document.getElementById('customAlertModal').style.display = 'flex';
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').style.display = 'none';
+        }
+
+        function toggleCategoryDropdown(event) {
+            event.stopPropagation();
+            const list = document.getElementById('categoryList');
+            list.classList.toggle('show');
+        }
+
+        window.addEventListener('click', function() {
+            const list = document.getElementById('categoryList');
+            if (list.classList.contains('show')) {
+                list.classList.remove('show');
+            }
+        });
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let filtered = products.filter(p => {
+                const matchCat = (currentCategory === 'all' || p.category === currentCategory);
+                const matchKey = p.name.toLowerCase().includes(keyword) || p.brand.toLowerCase().includes(keyword);
+                return matchCat && matchKey;
+            });
+
+            if (currentSort === 'asc') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (currentSort === 'desc') {
+                filtered.sort((a, b) => b.price - a.price);
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">Không tìm thấy sản phẩm phù hợp.</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div onclick="openDetailModal(${p.id})">
+                        <img class="product-img" src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x180?text=San+Pham'">
+                        <div class="product-body">
+                            <div>
+                                <div class="product-brand">${p.brand}</div>
+                                <div class="product-name">${p.name}</div>
+                                <div class="price-market">Kho: ${p.marketPrice.toLocaleString()} đ</div>
+                                <div class="product-price">${p.price.toLocaleString()} đ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 8px 8px 8px;">
+                        <div class="card-actions">
+                            <button class="btn-detail" onclick="openDetailModal(${p.id})">Chi Tiết</button>
+                            <button class="btn-buy" onclick="buyNow(${p.id})">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectCategory(cat, el) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('currentCatTitle').innerText = el.innerText.replace('>', '').trim().toUpperCase();
+            document.getElementById('categoryList').classList.remove('show');
+            renderProducts();
+        }
+
+        function setSort(type, el) {
+            currentSort = type;
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            renderProducts();
+        }
+
+        function applyFilters() {
+            renderProducts();
+        }
+
+        function openDetailModal(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+            viewingProduct = p;
+            document.getElementById('dtImg').src = p.img;
+            document.getElementById('dtBrand').innerText = p.brand;
+            document.getElementById('dtName').innerText = p.name;
+            document.getElementById('dtMarketPrice').innerText = 'Giá kho: ' + p.marketPrice.toLocaleString() + ' đ';
+            document.getElementById('dtStorePrice').innerText = 'Giá bán: ' + p.price.toLocaleString() + ' đ';
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        function addToCartFromDetail() {
+            if (!viewingProduct) return;
+            const existing = cart.find(i => i.id === viewingProduct.id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...viewingProduct, qty: 1 });
+            }
+            updateCartBadge();
+            closeDetailModal();
+            showCustomAlert('Đã thêm sản phẩm vào giỏ hàng!');
+        }
+
+        function buyNow(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...p, qty: 1 });
+            }
+            updateCartBadge();
+            openCartModal();
+        }
+
+        function updateCartBadge() {
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').innerText = totalQty;
+        }
+
+        function openCartModal() {
+            const listEl = document.getElementById('cartItemsList');
+            if (cart.length === 0) {
+                listEl.innerHTML = '<p style="text-align: center; color: #777; padding: 20px;">Giỏ hàng của bạn đang trống.</p>';
+                document.getElementById('cartTotalBar').innerText = 'Tổng tiền: 0 đ';
+                document.getElementById('cartModal').style.display = 'flex';
+                return;
+            }
+
+            let total = 0;
+            listEl.innerHTML = cart.map((item, index) => {
+                const sub = item.price * item.qty;
+                total += sub;
+                return `
+                    <div class="cart-item-row">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name} (${item.brand})</div>
+                            <div class="cart-item-price">${item.price.toLocaleString()} đ x ${item.qty} = <b>${sub.toLocaleString()} đ</b></div>
+                        </div>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                        </div>
+                        <button class="btn-remove-item" onclick="removeItem(${index})">Xóa</button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cartTotalBar').innerText = 'Tổng tiền: ' + total.toLocaleString() + ' đ';
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartBadge();
+            openCartModal();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            openCartModal();
+        }
+
+        function submitToGoogleSheet(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                showCustomAlert('Giỏ hàng trống!');
+                return;
+            }
+
+            const name = document.getElementById('cusName').value.trim();
+            const phone = document.getElementById('cusPhone').value.trim();
+            const address = document.getElementById('cusAddress').value.trim();
+
+            const cartDetails = cart.map(i => `[${i.brand}] ${i.name} (x${i.qty})`).join('; ');
+            const totalAmount = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerText = 'Đang gửi đơn...';
+            submitBtn.disabled = true;
+
+            const formData = new URLSearchParams();
+            formData.append('name', name);
+            formData.append('phone', phone);
+            formData.append('address', address);
+            formData.append('cartDetails', cartDetails);
+            formData.append('total', totalAmount);
+
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    submitBtn.innerText = 'Xác Nhận Đặt Hàng';
+                    submitBtn.disabled = false;
+                    cart = [];
+                    updateCartBadge();
+                    closeCartModal();
+                    document.getElementById('orderForm').reset();
+                    showCustomAlert('Đặt hàng thành công! Đơn hàng đã được lưu lên hệ thống.');
+                })
+                .catch(error => {
+                    submitBtn.innerText = 'Xác Nhận Đặt Hàng';
+                    submitBtn.disabled = false;
+                    showCustomAlert('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại!');
+                });
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
